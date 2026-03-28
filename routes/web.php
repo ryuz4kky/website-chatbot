@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\ChatSessionController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\MessageController;
 use App\Http\Controllers\Admin\PortfolioController;
@@ -7,12 +8,15 @@ use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\ProfileController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\ChatController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\PortfolioController as PublicPortfolioController;
 use Illuminate\Support\Facades\Route;
 
 // Public routes
 Route::get('/', [ContactController::class, 'index'])->name('home');
+Route::post('/chat/init', [ChatController::class, 'init'])->name('chat.init');
+Route::post('/chat/send', [ChatController::class, 'send'])->name('chat.send');
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 Route::get('/portfolio/{portfolio}', [PublicPortfolioController::class, 'show'])->name('portfolio.show');
 
@@ -49,4 +53,9 @@ Route::prefix('admin')->middleware(['auth', 'admin'])->name('admin.')->group(fun
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
     Route::patch('/profile/info', [ProfileController::class, 'updateInfo'])->name('profile.info');
     Route::patch('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password');
+
+    // Chat sessions
+    Route::get('/chats', [ChatSessionController::class, 'index'])->name('chats.index');
+    Route::get('/chats/{chatSession}', [ChatSessionController::class, 'show'])->name('chats.show');
+    Route::delete('/chats/{chatSession}', [ChatSessionController::class, 'destroy'])->name('chats.destroy');
 });

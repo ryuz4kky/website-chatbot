@@ -6,6 +6,7 @@ const navItems = [
     { href: '/admin/portfolios', label: 'Portfolio',    icon: '◈' },
     { href: '/admin/services',   label: 'Layanan',      icon: '◎' },
     { href: '/admin/messages',   label: 'Pesan',        icon: '◉' },
+    { href: '/admin/chats',      label: 'Chat AI',      icon: '🤖' },
 ];
 
 const settingItems = [

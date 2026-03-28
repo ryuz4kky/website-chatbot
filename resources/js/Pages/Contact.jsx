@@ -1,5 +1,6 @@
 import { Head, useForm, usePage } from '@inertiajs/react';
 import { useState, useEffect, useRef } from 'react';
+import Chatbot from '@/Components/Chatbot';
 
 /* ─────────────────────────────────────────────
    NAVBAR
@@ -625,6 +626,7 @@ export default function ContactPage({ portfolios, services }) {
                 <Contact />
                 <Footer />
             </div>
+            <Chatbot siteName={usePage().props.settings?.site_name || 'YZ Studio'} />
         </>
     );
 }
