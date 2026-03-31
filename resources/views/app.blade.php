@@ -1,8 +1,11 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="id">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#4f46e5" />
+    <link rel="canonical" href="{{ url()->current() }}" />
     @viteReactRefresh
     @vite(['resources/js/app.jsx'])
     @inertiaHead

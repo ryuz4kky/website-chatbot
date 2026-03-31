@@ -153,16 +153,16 @@ function Hero() {
 
                 {/* Headline */}
                 <h1 className="text-5xl md:text-7xl font-bold text-white leading-tight mb-6 animate-fade-in-up">
-                    We Build
+                    Jasa Pembuatan
                     <span className="block text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">
-                        Digital Products
+                        Website & Aplikasi
                     </span>
-                    That Matter
+                    Profesional
                 </h1>
 
                 {/* Subtitle */}
                 <p className="text-lg md:text-xl text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed animate-fade-in-up delay-100">
-                    Software house spesialis website, aplikasi web, dan solusi digital
+                    Software house Indonesia spesialis website, aplikasi web, dan solusi digital
                     untuk bisnis yang ingin berkembang lebih cepat.
                 </p>
 
@@ -282,7 +282,7 @@ function PortfolioCard({ portfolio }) {
                 {portfolio.image && !imgError ? (
                     <img
                         src={`/storage/${portfolio.image}`}
-                        alt={portfolio.title}
+                        alt={`${portfolio.title} — Contoh Project Portfolio`}
                         loading="lazy"
                         onLoad={() => setImgLoaded(true)}
                         onError={() => setImgError(true)}
@@ -614,17 +614,52 @@ function Footer() {
    MAIN PAGE
 ───────────────────────────────────────────── */
 export default function ContactPage({ portfolios, services }) {
+    const { settings } = usePage().props;
+    const siteName    = settings?.site_name    || 'YZ Studio';
+    const siteDesc    = settings?.site_description || 'Software house Indonesia spesialis pembuatan website, aplikasi web, dan solusi digital profesional untuk bisnis modern. Berpengalaman 3+ tahun, 50+ project selesai.';
+    const siteTagline = settings?.site_tagline || 'Software House Indonesia — Website & Aplikasi Web Profesional';
+
     return (
         <>
-            <Head title="YZ Studio — Software House Indonesia" />
+            <Head>
+                <title>{siteName} — {siteTagline}</title>
+                <meta name="description" content={siteDesc} />
+                <meta name="keywords" content="software house indonesia, jasa pembuatan website, jasa aplikasi web, web developer indonesia, jasa website profesional, aplikasi bisnis, website company profile" />
+                {/* Open Graph */}
+                <meta property="og:type" content="website" />
+                <meta property="og:title" content={`${siteName} — ${siteTagline}`} />
+                <meta property="og:description" content={siteDesc} />
+                <meta property="og:locale" content="id_ID" />
+                {settings?.logo && <meta property="og:image" content={`/storage/${settings.logo}`} />}
+                {/* Twitter Card */}
+                <meta name="twitter:card" content="summary_large_image" />
+                <meta name="twitter:title" content={`${siteName} — ${siteTagline}`} />
+                <meta name="twitter:description" content={siteDesc} />
+                {/* Schema.org JSON-LD */}
+                <script type="application/ld+json">{JSON.stringify({
+                    "@context": "https://schema.org",
+                    "@type": "ProfessionalService",
+                    "name": siteName,
+                    "description": siteDesc,
+                    "url": window.location.origin,
+                    "telephone": settings?.phone || '',
+                    "email": settings?.email || '',
+                    "address": { "@type": "PostalAddress", "addressCountry": "ID", "addressLocality": settings?.address || 'Indonesia' },
+                    "sameAs": [settings?.instagram, settings?.linkedin, settings?.github].filter(Boolean),
+                    "serviceType": "Software Development",
+                    "areaServed": "Indonesia",
+                })}</script>
+            </Head>
             <div className="min-h-screen">
-                <Navbar />
-                <Hero />
-                <Services services={services} />
-                <Portfolio portfolios={portfolios} />
-                <WhyUs />
-                <Contact />
-                <Footer />
+                <header role="banner"><Navbar /></header>
+                <main id="main-content">
+                    <Hero />
+                    <Services services={services} />
+                    <Portfolio portfolios={portfolios} />
+                    <WhyUs />
+                    <Contact />
+                </main>
+                <footer role="contentinfo"><Footer /></footer>
             </div>
             <Chatbot siteName={usePage().props.settings?.site_name || 'YZ Studio'} />
         </>
