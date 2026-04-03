@@ -31,10 +31,12 @@ class ChatController extends Controller
             'content' => trim($request->message),
         ]);
 
-        // Kirim ke Gemini
-        $result = $this->gemini->chat([
-            ['role' => 'user', 'content' => trim($request->message)],
-        ]);
+        // Kirim ke Gemini dengan info pengguna
+        $result = $this->gemini->chat(
+            [['role' => 'user', 'content' => trim($request->message)]],
+            $session->name,
+            $session->phone
+        );
 
         // Simpan balasan AI
         $session->messages()->create([
@@ -73,8 +75,8 @@ class ChatController extends Controller
             ->values()
             ->toArray();
 
-        // Kirim ke Gemini
-        $result = $this->gemini->chat($history);
+        // Kirim ke Gemini dengan info pengguna
+        $result = $this->gemini->chat($history, $session->name, $session->phone);
 
         // Simpan balasan AI
         $session->messages()->create([

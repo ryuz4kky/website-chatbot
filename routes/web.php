@@ -19,6 +19,13 @@ Route::post('/chat/init', [ChatController::class, 'init'])->name('chat.init');
 Route::post('/chat/send', [ChatController::class, 'send'])->name('chat.send');
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 Route::get('/portfolio/{portfolio}', [PublicPortfolioController::class, 'show'])->name('portfolio.show');
+Route::get('/sitemap.xml', fn() => response(
+    view('sitemap', [
+        'portfolios' => \App\Models\Portfolio::published()->latest()->get(['id', 'updated_at']),
+    ]),
+    200,
+    ['Content-Type' => 'application/xml']
+))->name('sitemap');
 
 // Auth
 Route::get('/login', [AuthenticatedSessionController::class, 'create'])

@@ -19,14 +19,15 @@ class GeminiService
         $this->models = config('gemini.models', ['gemini-2.0-flash']);
     }
 
-    public function buildSystemPrompt(): string
+    public function buildSystemPrompt(string $userName = '', string $userPhone = ''): string
     {
         $settings = Setting::allAsArray();
         $siteName = $settings['site_name'] ?? config('app.name');
         $tagline  = $settings['site_tagline'] ?? '';
-        $email    = $settings['email'] ?? '';
-        $phone    = $settings['phone'] ?? '';
-        $address  = $settings['address'] ?? '';
+        $email     = $settings['email'] ?? '';
+        $phone     = $settings['phone'] ?? '';
+        $whatsapp  = $settings['whatsapp'] ?? '';
+        $address   = $settings['address'] ?? '';
 
         $services = Service::where('is_active', true)->get(['title', 'description', 'price']);
         $serviceList = $services->map(fn($s) =>
@@ -45,10 +46,11 @@ Kamu adalah asisten virtual AI untuk *{$siteName}*, sebuah software house Indone
 {$tagline}
 
 == INFORMASI PERUSAHAAN ==
-Nama    : {$siteName}
-Email   : {$email}
-Telepon : {$phone}
-Alamat  : {$address}
+Nama      : {$siteName}
+Email     : {$email}
+Telepon   : {$phone}
+WhatsApp  : {$whatsapp}
+Alamat    : {$address}
 
 == LAYANAN KAMI ==
 {$serviceList}
@@ -56,7 +58,13 @@ Alamat  : {$address}
 == PORTFOLIO ==
 {$portfolioList}
 
+== PENGGUNA SAAT INI ==
+Nama    : {$userName}
+No. WA  : {$userPhone}
+
 == INSTRUKSI ==
+- Sapa pengguna dengan namanya ({$userName}) saat pertama kali menjawab.
+- Jika ditanya nomor WA atau kontak perusahaan, sampaikan nomor WhatsApp: {$whatsapp}.
 - Jawab pertanyaan seputar layanan, portfolio, harga, proses kerja, dan hal terkait {$siteName}.
 - Gunakan bahasa yang sama dengan pengguna (Indonesia atau Inggris).
 - Jika pengguna ingin order atau diskusi lebih lanjut, arahkan untuk mengisi form kontak di halaman ini.
@@ -73,9 +81,11 @@ PROMPT;
     }
 
     /**
-     * @param array $history [['role' => 'user'|'model', 'content' => '...']]
+     * @param array  $history  [['role' => 'user'|'model', 'content' => '...']]
+     * @param string $userName  Nama pengguna untuk sapaan personal
+     * @param string $userPhone Nomor WA pengguna
      */
-    public function chat(array $history): array
+    public function chat(array $history, string $userName = '', string $userPhone = ''): array
     {
         if (empty($this->apiKey)) {
             return ['success' => false, 'text' => 'API key Gemini belum dikonfigurasi.'];
@@ -88,7 +98,7 @@ PROMPT;
 
         $payload = [
             'system_instruction' => [
-                'parts' => [['text' => $this->buildSystemPrompt()]],
+                'parts' => [['text' => $this->buildSystemPrompt($userName, $userPhone)]],
             ],
             'contents'           => $contents,
             'generationConfig'   => [
