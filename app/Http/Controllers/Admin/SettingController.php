@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -42,6 +43,7 @@ class SettingController extends Controller
             if ($old) Storage::disk('public')->delete($old);
 
             $path = $request->file('logo')->store('settings', 'public');
+            $this->mirrorToLegacyPublicPath($path);
             Setting::set('logo', $path);
         }
 
@@ -51,6 +53,7 @@ class SettingController extends Controller
             if ($old) Storage::disk('public')->delete($old);
 
             $path = $request->file('favicon')->store('settings', 'public');
+            $this->mirrorToLegacyPublicPath($path);
             Setting::set('favicon', $path);
         }
 
@@ -63,5 +66,18 @@ class SettingController extends Controller
         }
 
         return back()->with('success', 'Pengaturan berhasil disimpan.');
+    }
+
+    private function mirrorToLegacyPublicPath(string $path): void
+    {
+        $source = Storage::disk('public')->path($path);
+        $target = base_path($path);
+
+        if (! File::exists($source)) {
+            return;
+        }
+
+        File::ensureDirectoryExists(dirname($target));
+        File::copy($source, $target);
     }
 }
