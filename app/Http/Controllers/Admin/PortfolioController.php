@@ -52,6 +52,7 @@ class PortfolioController extends Controller
 
         $validated['gallery']      = $this->processGallery($request);
         $validated['technologies'] = $this->parseTechnologies($validated['technologies'] ?? null);
+        $validated['slug']         = Portfolio::makeUniqueSlug($validated['title']);
 
         Portfolio::create($validated);
 
@@ -104,6 +105,7 @@ class PortfolioController extends Controller
         $validated['gallery'] = array_values(array_merge($currentGallery, $newGallery));
 
         $validated['technologies'] = $this->parseTechnologies($validated['technologies'] ?? null);
+        $validated['slug'] = Portfolio::makeUniqueSlug($validated['title'], $portfolio->id);
         unset($validated['delete_gallery']);
 
         $portfolio->update($validated);

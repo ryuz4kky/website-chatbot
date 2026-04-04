@@ -20,7 +20,7 @@ class ContactController extends Controller
     {
         return Inertia::render('Contact', [
             'portfolios' => Portfolio::published()->latest()
-                ->get(['id', 'title', 'description', 'image', 'demo_link', 'technologies', 'date']),
+                ->get(['id', 'slug', 'title', 'description', 'image', 'demo_link', 'technologies', 'date']),
             'services' => Service::where('is_active', true)
                 ->get(['id', 'title', 'description', 'icon', 'price']),
         ]);

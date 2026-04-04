@@ -76,7 +76,7 @@ function Navbar() {
 /* ── Related card ── */
 function RelatedCard({ item }) {
     return (
-        <Link href={`/portfolio/${item.id}`}
+        <Link href={`/portfolio/${item.slug || item.id}`}
             className="group block bg-white rounded-xl border border-slate-100 overflow-hidden hover:shadow-md transition-shadow">
             <div className="relative overflow-hidden bg-slate-100" style={{ aspectRatio: '16/9' }}>
                 {item.image
@@ -101,6 +101,16 @@ function RelatedCard({ item }) {
 
 /* ── Main Page ── */
 export default function PortfolioShow({ portfolio, related }) {
+    const { settings, seo } = usePage().props;
+    const siteName = settings?.site_name || 'YZ Studio';
+    const appUrl = seo?.appUrl || '';
+    const currentUrl = seo?.currentUrl || `${appUrl}/portfolio/${portfolio.slug || portfolio.id}`;
+    const description = portfolio.description?.trim()
+        ? portfolio.description.trim().slice(0, 160)
+        : `${portfolio.title} adalah salah satu project portfolio ${siteName}.`;
+    const ogImage = portfolio.image
+        ? `${appUrl}/storage/${portfolio.image}`
+        : (settings?.logo ? `${appUrl}/storage/${settings.logo}` : `${appUrl}/favicon.ico`);
     const [lightbox, setLightbox] = useState(null); // index or null
 
     // Semua gambar: utama + gallery
@@ -108,12 +118,40 @@ export default function PortfolioShow({ portfolio, related }) {
         ...(portfolio.image ? [portfolio.image] : []),
         ...(portfolio.gallery ?? []),
     ];
+    const jsonLd = JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'CreativeWork',
+        name: portfolio.title,
+        description,
+        url: currentUrl,
+        image: allImages.map((img) => `${appUrl}/storage/${img}`),
+        creator: {
+            '@type': 'Organization',
+            name: siteName,
+            url: appUrl,
+        },
+        datePublished: portfolio.date,
+        dateModified: portfolio.updated_at,
+        keywords: portfolio.technologies ?? [],
+    });
 
     const hasGallery = allImages.length > 1;
 
     return (
         <>
-            <Head title={`${portfolio.title} — Portfolio`} />
+            <Head title={`${portfolio.title} — Portfolio | ${siteName}`}>
+                <meta name="description" content={description} />
+                <meta property="og:type" content="article" />
+                <meta property="og:title" content={`${portfolio.title} — Portfolio | ${siteName}`} />
+                <meta property="og:description" content={description} />
+                <meta property="og:url" content={currentUrl} />
+                <meta property="og:image" content={ogImage} />
+                <meta name="twitter:card" content="summary_large_image" />
+                <meta name="twitter:title" content={`${portfolio.title} — Portfolio | ${siteName}`} />
+                <meta name="twitter:description" content={description} />
+                <meta name="twitter:image" content={ogImage} />
+            </Head>
+            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd }} />
 
             {lightbox !== null && (
                 <Lightbox images={allImages} index={lightbox} onClose={() => setLightbox(null)} />

@@ -49,7 +49,7 @@ export default function PortfolioEdit({ portfolio }) {
                 <div className="flex items-center gap-3 mb-6">
                     <a href="/admin/portfolios" className="text-slate-400 hover:text-slate-600 text-sm">← Kembali</a>
                     <h2 className="text-xl font-bold text-slate-800">Edit Portfolio</h2>
-                    <a href={`/portfolio/${portfolio.id}`} target="_blank"
+                    <a href={`/portfolio/${portfolio.slug || portfolio.id}`} target="_blank"
                         className="ml-auto text-xs text-indigo-600 hover:underline">
                         Lihat halaman ↗
                     </a>

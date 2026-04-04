@@ -1,0 +1,9 @@
+{
+  "name": "yz-studio-ssr",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "ssr.cjs",
+  "scripts": {
+    "start": "node ssr.cjs"
+  }
+}

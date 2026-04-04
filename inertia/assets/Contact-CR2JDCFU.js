@@ -47,6 +47,7 @@ function TypingDots() {
 	});
 }
 function Chatbot({ siteName = "YZ Studio" }) {
+	const [mounted, setMounted] = useState(false);
 	const [open, setOpen] = useState(false);
 	const [step, setStep] = useState("form");
 	const [messages, setMessages] = useState([]);
@@ -58,6 +59,9 @@ function Chatbot({ siteName = "YZ Studio" }) {
 	const [formErrors, setFormErrors] = useState({});
 	const bottomRef = useRef(null);
 	const inputRef = useRef(null);
+	useEffect(() => {
+		setMounted(true);
+	}, []);
 	useEffect(() => {
 		if (open && step === "chat") bottomRef.current?.scrollIntoView({ behavior: "smooth" });
 	}, [messages, open]);
@@ -147,6 +151,7 @@ function Chatbot({ siteName = "YZ Studio" }) {
 		setFormErrors({});
 		setInput("");
 	};
+	if (!mounted) return null;
 	return /* @__PURE__ */ jsxs(Fragment, { children: [/* @__PURE__ */ jsx("button", {
 		onClick: () => setOpen((o) => !o),
 		className: "fixed bottom-6 right-6 z-50 w-14 h-14 bg-indigo-600 hover:bg-indigo-700 text-white rounded-full shadow-lg hover:shadow-indigo-500/40 transition-all duration-200 flex items-center justify-center text-2xl",
@@ -251,6 +256,30 @@ function Chatbot({ siteName = "YZ Studio" }) {
 }
 //#endregion
 //#region resources/js/Pages/Contact.jsx
+function formatIdr(price) {
+	const amount = Number(price);
+	if (!Number.isFinite(amount) || amount <= 0) return "Harga Fleksibel";
+	return `Mulai Rp ${Math.round(amount).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".")}`;
+}
+function formatMonthYear(dateValue) {
+	if (!dateValue) return "";
+	const date = new Date(dateValue);
+	if (Number.isNaN(date.getTime())) return "";
+	return `${[
+		"Januari",
+		"Februari",
+		"Maret",
+		"April",
+		"Mei",
+		"Juni",
+		"Juli",
+		"Agustus",
+		"September",
+		"Oktober",
+		"November",
+		"Desember"
+	][date.getMonth()]} ${date.getFullYear()}`;
+}
 function Navbar() {
 	const { settings } = usePage().props;
 	const [scrolled, setScrolled] = useState(false);
@@ -466,14 +495,6 @@ function Hero() {
 }
 function Services({ services }) {
 	if (!services?.length) return null;
-	const formatPrice = (price) => {
-		if (!price) return "Harga Fleksibel";
-		return "Mulai " + new Intl.NumberFormat("id-ID", {
-			style: "currency",
-			currency: "IDR",
-			minimumFractionDigits: 0
-		}).format(price);
-	};
 	return /* @__PURE__ */ jsx("section", {
 		id: "services",
 		className: "py-24 bg-white",
@@ -517,7 +538,7 @@ function Services({ services }) {
 							className: "flex items-center justify-between pt-4 border-t border-slate-100",
 							children: [/* @__PURE__ */ jsx("span", {
 								className: "text-sm font-semibold text-indigo-600",
-								children: formatPrice(service.price)
+								children: formatIdr(service.price)
 							}), /* @__PURE__ */ jsx("a", {
 								href: "#contact",
 								className: "text-xs font-medium text-slate-400 group-hover:text-indigo-600 transition-colors flex items-center gap-1",
@@ -596,12 +617,9 @@ function PortfolioCard({ portfolio }) {
 						children: ["+", portfolio.technologies.length - 4]
 					})]
 				}),
-				/* @__PURE__ */ jsx("p", {
+				formatMonthYear(portfolio.date) && /* @__PURE__ */ jsx("p", {
 					className: "text-xs text-slate-400 mt-3",
-					children: new Date(portfolio.date).toLocaleDateString("id-ID", {
-						year: "numeric",
-						month: "long"
-					})
+					children: formatMonthYear(portfolio.date)
 				})
 			]
 		})]
@@ -1048,10 +1066,6 @@ function ContactPage({ portfolios, services }) {
 					rel: "icon",
 					type: "image/png",
 					href: settings?.favicon ? `/storage/${settings.favicon}` : "/favicon.ico"
-				}),
-				/* @__PURE__ */ jsx("link", {
-					rel: "preconnect",
-					href: "https://generativelanguage.googleapis.com"
 				})
 			]
 		}),

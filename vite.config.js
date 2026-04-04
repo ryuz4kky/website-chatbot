@@ -9,6 +9,7 @@ export default defineConfig({
         laravel({
             input: ['resources/css/app.css', 'resources/js/app.jsx'],
             ssr: 'resources/js/ssr.jsx',
+            ssrOutputDirectory: 'inertia',
             refresh: true,
         }),
         tailwindcss(),

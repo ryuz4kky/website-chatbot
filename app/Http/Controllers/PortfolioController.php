@@ -16,7 +16,7 @@ class PortfolioController extends Controller
             ->where('id', '!=', $portfolio->id)
             ->latest()
             ->take(3)
-            ->get(['id', 'title', 'image', 'technologies', 'date', 'demo_link']);
+            ->get(['id', 'slug', 'title', 'image', 'technologies', 'date', 'demo_link']);
 
         return Inertia::render('Portfolio/Show', [
             'portfolio' => $portfolio,

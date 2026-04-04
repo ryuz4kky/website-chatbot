@@ -31,7 +31,7 @@ var ssr_default = (page) => createInertiaApp({
 		"./Pages/Admin/Service/Index.jsx": () => import("./assets/Index-0O8Hf2kh.js"),
 		"./Pages/Admin/Settings/Index.jsx": () => import("./assets/Index-I4_uZ5GU.js"),
 		"./Pages/Auth/Login.jsx": () => import("./assets/Login-siQSvFjt.js"),
-		"./Pages/Contact.jsx": () => import("./assets/Contact-CbR_KKX0.js"),
+		"./Pages/Contact.jsx": () => import("./assets/Contact-CR2JDCFU.js"),
 		"./Pages/Portfolio/Show.jsx": () => import("./assets/Show-SeeCbt4U.js")
 	})),
 	setup({ App, props }) {

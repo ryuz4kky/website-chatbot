@@ -1,6 +1,5 @@
 import { Head, useForm, usePage } from '@inertiajs/react';
 import { useState, useEffect, useRef } from 'react';
-import Chatbot from '@/Components/Chatbot';
 
 /* ─────────────────────────────────────────────
    NAVBAR
@@ -54,7 +53,7 @@ function Navbar() {
                                 scrolled ? 'text-slate-900' : 'text-white'
                               }`}>
                                 {siteName.split(' ')[0]}
-                                <span className="text-indigo-500">{siteName.split(' ').slice(1).join(' ') || ''}</span>
+                                <span className="text-blue-500">{siteName.split(' ').slice(1).join(' ') || ''}</span>
                               </span>
                         }
                     </a>
@@ -62,13 +61,13 @@ function Navbar() {
                     {/* Desktop nav */}
                     <div className="hidden md:flex items-center gap-7">
                         {links.map(l => (
-                            <a key={l.href} href={l.href} className={`text-sm font-medium transition-colors hover:text-indigo-500 ${
+                            <a key={l.href} href={l.href} className={`text-sm font-medium transition-colors hover:text-blue-500 ${
                                 scrolled ? 'text-slate-600' : 'text-white/80'
                             }`}>
                                 {l.label}
                             </a>
                         ))}
-                        <a href="#contact" className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-lg transition-colors">
+                        <a href="#contact" className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-lg transition-colors">
                             Mulai Project
                         </a>
                     </div>
@@ -89,7 +88,7 @@ function Navbar() {
                 menuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
             }`}>
                 {/* Backdrop */}
-                <div className="absolute inset-0 bg-slate-900/80 backdrop-blur-sm" onClick={() => setMenuOpen(false)} />
+                <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-sm" onClick={() => setMenuOpen(false)} />
                 {/* Panel */}
                 <div className={`absolute top-0 right-0 w-72 h-full bg-white flex flex-col shadow-2xl transition-transform duration-300 ${
                     menuOpen ? 'translate-x-0' : 'translate-x-full'
@@ -104,7 +103,7 @@ function Navbar() {
                         {links.map(l => (
                             <a key={l.href} href={l.href}
                                 onClick={() => setMenuOpen(false)}
-                                className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-700 hover:bg-indigo-50 hover:text-indigo-600 transition-colors"
+                                className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition-colors"
                             >
                                 {l.label}
                             </a>
@@ -114,7 +113,7 @@ function Navbar() {
                     <div className="px-6 pb-8">
                         <a href="#contact"
                             onClick={() => setMenuOpen(false)}
-                            className="block w-full text-center px-4 py-3 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-xl transition-colors"
+                            className="block w-full text-center px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-xl transition-colors"
                         >
                             Mulai Project
                         </a>
@@ -131,12 +130,12 @@ function Navbar() {
 function Hero() {
     const { settings } = usePage().props;
     return (
-        <section id="hero" className="relative min-h-screen flex items-center overflow-hidden bg-slate-900">
+        <section id="hero" className="relative min-h-screen flex items-center overflow-hidden bg-gradient-to-br from-slate-950 via-blue-950 to-sky-900">
             {/* Background gradient blobs */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                <div className="absolute -top-40 -left-40 w-96 h-96 bg-indigo-600/30 rounded-full blur-3xl" />
-                <div className="absolute top-1/2 -right-40 w-80 h-80 bg-purple-600/20 rounded-full blur-3xl" />
-                <div className="absolute bottom-0 left-1/3 w-72 h-72 bg-indigo-400/10 rounded-full blur-3xl" />
+                <div className="absolute -top-40 -left-40 w-96 h-96 bg-blue-500/35 rounded-full blur-3xl" />
+                <div className="absolute top-1/2 -right-40 w-80 h-80 bg-cyan-400/25 rounded-full blur-3xl" />
+                <div className="absolute bottom-0 left-1/3 w-72 h-72 bg-sky-400/20 rounded-full blur-3xl" />
             </div>
 
             {/* Grid pattern overlay */}
@@ -146,15 +145,15 @@ function Hero() {
 
             <div className="relative max-w-6xl mx-auto px-6 py-32 text-center">
                 {/* Badge */}
-                <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-indigo-500/10 border border-indigo-500/20 rounded-full text-indigo-300 text-sm font-medium mb-8 animate-fade-in">
-                    <span className="w-2 h-2 bg-indigo-400 rounded-full animate-pulse" />
+                <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-blue-500/10 border border-blue-400/30 rounded-full text-blue-200 text-sm font-medium mb-8 animate-fade-in">
+                    <span className="w-2 h-2 bg-blue-300 rounded-full animate-pulse" />
                     Available for new projects
                 </div>
 
                 {/* Headline */}
                 <h1 className="text-5xl md:text-7xl font-bold text-white leading-tight mb-6 animate-fade-in-up">
                     Jasa Pembuatan
-                    <span className="block text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">
+                    <span className="block text-transparent bg-clip-text bg-gradient-to-r from-blue-300 via-sky-300 to-cyan-300">
                         Website & Aplikasi
                     </span>
                     Profesional
@@ -169,7 +168,7 @@ function Hero() {
                 {/* CTAs */}
                 <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in-up delay-200">
                     <a href="#contact"
-                        className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-xl transition-all duration-200 hover:shadow-lg hover:shadow-indigo-500/25"
+                        className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-xl transition-all duration-200 hover:shadow-lg hover:shadow-blue-500/25"
                     >
                         💬 Diskusi Project
                     </a>
@@ -223,7 +222,7 @@ function Services({ services }) {
             <div className="max-w-6xl mx-auto px-6">
                 {/* Section header */}
                 <div className="text-center mb-16">
-                    <span className="text-xs font-bold uppercase tracking-widest text-indigo-600 mb-3 block">
+                    <span className="text-xs font-bold uppercase tracking-widest text-blue-600 mb-3 block">
                         Apa yang kami tawarkan
                     </span>
                     <h2 className="text-4xl font-bold text-slate-900 mb-4">Layanan Kami</h2>
@@ -235,11 +234,11 @@ function Services({ services }) {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {services.map((service, i) => (
                         <div key={service.id}
-                            className="card-hover group p-8 rounded-2xl border border-slate-100 bg-white hover:border-indigo-100 hover:bg-indigo-50/30 cursor-default"
+                            className="card-hover group p-8 rounded-2xl border border-slate-100 bg-white hover:border-blue-100 hover:bg-blue-50/40 cursor-default"
                             style={{ animationDelay: `${i * 0.1}s` }}
                         >
                             {/* Icon */}
-                            <div className="w-14 h-14 rounded-2xl bg-indigo-50 group-hover:bg-indigo-100 flex items-center justify-center text-2xl mb-6 transition-colors">
+                            <div className="w-14 h-14 rounded-2xl bg-blue-50 group-hover:bg-blue-100 flex items-center justify-center text-2xl mb-6 transition-colors">
                                 {service.icon || '⚙️'}
                             </div>
 
@@ -247,9 +246,9 @@ function Services({ services }) {
                             <p className="text-slate-500 text-sm leading-relaxed mb-6">{service.description}</p>
 
                             <div className="flex items-center justify-between pt-4 border-t border-slate-100">
-                                <span className="text-sm font-semibold text-indigo-600">{formatPrice(service.price)}</span>
+                                <span className="text-sm font-semibold text-blue-600">{formatPrice(service.price)}</span>
                                 <a href="#contact"
-                                    className="text-xs font-medium text-slate-400 group-hover:text-indigo-600 transition-colors flex items-center gap-1"
+                                    className="text-xs font-medium text-slate-400 group-hover:text-blue-600 transition-colors flex items-center gap-1"
                                 >
                                     Pesan →
                                 </a>
@@ -291,7 +290,7 @@ function PortfolioCard({ portfolio }) {
                         }`}
                     />
                 ) : (
-                    <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-indigo-50 to-purple-50">
+                    <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-blue-50 to-cyan-50">
                         <span className="text-5xl mb-2">🖥️</span>
                         <span className="text-xs text-slate-400">{portfolio.title}</span>
                     </div>
@@ -300,14 +299,14 @@ function PortfolioCard({ portfolio }) {
                 {/* Hover overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
                     <div className="translate-y-2 group-hover:translate-y-0 transition-transform duration-300 flex gap-2">
-                        <a href={`/portfolio/${portfolio.id}`}
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white text-slate-900 text-xs font-semibold rounded-lg hover:bg-indigo-50 transition-colors"
+                        <a href={`/portfolio/${portfolio.slug || portfolio.id}`}
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white text-slate-900 text-xs font-semibold rounded-lg hover:bg-blue-50 transition-colors"
                         >
                             Detail →
                         </a>
                         {portfolio.demo_link && (
                             <a href={portfolio.demo_link} target="_blank" rel="noopener noreferrer"
-                                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-indigo-600 text-white text-xs font-semibold rounded-lg hover:bg-indigo-700 transition-colors"
+                                className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 text-white text-xs font-semibold rounded-lg hover:bg-blue-700 transition-colors"
                             >
                                 Demo ↗
                             </a>
@@ -336,7 +335,6 @@ function PortfolioCard({ portfolio }) {
                         )}
                     </div>
                 )}
-
                 <p className="text-xs text-slate-400 mt-3">
                     {new Date(portfolio.date).toLocaleDateString('id-ID', { year: 'numeric', month: 'long' })}
                 </p>
@@ -352,7 +350,7 @@ function Portfolio({ portfolios }) {
         <section id="portfolio" className="py-24 bg-slate-50">
             <div className="max-w-6xl mx-auto px-6">
                 <div className="text-center mb-16">
-                    <span className="text-xs font-bold uppercase tracking-widest text-indigo-600 mb-3 block">
+                    <span className="text-xs font-bold uppercase tracking-widest text-blue-600 mb-3 block">
                         Hasil Kerja Kami
                     </span>
                     <h2 className="text-4xl font-bold text-slate-900 mb-4">Portfolio</h2>
@@ -385,12 +383,12 @@ function WhyUs() {
             <div className="max-w-6xl mx-auto px-6">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
                     <div>
-                        <span className="text-xs font-bold uppercase tracking-widest text-indigo-600 mb-3 block">
+                    <span className="text-xs font-bold uppercase tracking-widest text-blue-600 mb-3 block">
                             Kenapa Pilih Kami
                         </span>
                         <h2 className="text-4xl font-bold text-slate-900 mb-6 leading-tight">
                             Partner Terpercaya untuk
-                            <span className="text-indigo-600"> Transformasi Digital</span>
+                            <span className="text-blue-600"> Transformasi Digital</span>
                         </h2>
                         <p className="text-slate-500 leading-relaxed mb-8">
                             Kami bukan sekadar vendor — kami adalah mitra bisnis yang peduli dengan
@@ -398,7 +396,7 @@ function WhyUs() {
                             standar kualitas tertinggi.
                         </p>
                         <a href="#contact"
-                            className="inline-flex items-center gap-2 px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl transition-colors"
+                            className="inline-flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-xl transition-colors"
                         >
                             Konsultasi Gratis →
                         </a>
@@ -406,7 +404,7 @@ function WhyUs() {
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         {reasons.map((r, i) => (
-                            <div key={i} className="p-6 rounded-2xl bg-slate-50 hover:bg-indigo-50 transition-colors group">
+                            <div key={i} className="p-6 rounded-2xl bg-slate-50 hover:bg-blue-50 transition-colors group">
                                 <span className="text-3xl mb-4 block">{r.icon}</span>
                                 <h4 className="font-bold text-slate-800 mb-2 text-sm">{r.title}</h4>
                                 <p className="text-slate-500 text-xs leading-relaxed">{r.desc}</p>
@@ -447,17 +445,17 @@ function Contact() {
     ];
 
     return (
-        <section id="contact" className="py-24 bg-slate-900">
+        <section id="contact" className="py-24 bg-gradient-to-br from-slate-950 via-blue-950 to-slate-900">
             <div className="max-w-6xl mx-auto px-6">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
                     {/* Left */}
                     <div>
-                        <span className="text-xs font-bold uppercase tracking-widest text-indigo-400 mb-3 block">
+                        <span className="text-xs font-bold uppercase tracking-widest text-blue-300 mb-3 block">
                             Hubungi Kami
                         </span>
                         <h2 className="text-4xl font-bold text-white mb-6 leading-tight">
                             Siap Memulai
-                            <span className="text-indigo-400"> Project Anda?</span>
+                            <span className="text-blue-300"> Project Anda?</span>
                         </h2>
                         <p className="text-slate-400 leading-relaxed mb-10">
                             Ceritakan kebutuhan Anda, dan tim kami akan merespons dalam waktu
@@ -467,7 +465,7 @@ function Contact() {
                         <div className="space-y-5">
                             {displayItems.map(item => (
                                 <div key={item.label} className="flex items-center gap-4">
-                                    <div className="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center text-lg shrink-0">
+                                    <div className="w-10 h-10 rounded-xl bg-blue-400/10 flex items-center justify-center text-lg shrink-0">
                                         {item.icon}
                                     </div>
                                     <div>
@@ -480,7 +478,7 @@ function Contact() {
                     </div>
 
                     {/* Right — Form */}
-                    <div className="bg-slate-800/50 backdrop-blur-sm border border-slate-700/50 rounded-2xl p-8">
+                    <div className="bg-blue-950/40 backdrop-blur-sm border border-blue-800/40 rounded-2xl p-8 shadow-2xl shadow-blue-950/20">
                         {flash?.success && (
                             <div className="mb-6 px-4 py-3 bg-green-500/10 border border-green-500/20 text-green-400 rounded-xl text-sm text-center">
                                 ✅ {flash.success}
@@ -496,7 +494,7 @@ function Contact() {
                                     type="text"
                                     value={data.name}
                                     onChange={e => setData('name', e.target.value)}
-                                    className="w-full px-4 py-3 bg-slate-900/50 border border-slate-700 text-white placeholder-slate-500 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm transition-all"
+                                    className="w-full px-4 py-3 bg-slate-950/60 border border-blue-900/60 text-white placeholder-slate-500 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm transition-all"
                                     placeholder="Budi Santoso"
                                 />
                                 {errors.name && <p className="mt-1.5 text-xs text-red-400">{errors.name}</p>}
@@ -510,7 +508,7 @@ function Contact() {
                                     type="tel"
                                     value={data.whatsapp}
                                     onChange={e => setData('whatsapp', e.target.value)}
-                                    className="w-full px-4 py-3 bg-slate-900/50 border border-slate-700 text-white placeholder-slate-500 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm transition-all"
+                                    className="w-full px-4 py-3 bg-slate-950/60 border border-blue-900/60 text-white placeholder-slate-500 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm transition-all"
                                     placeholder="08123456789"
                                 />
                                 <p className="mt-1.5 text-xs text-slate-600">Format: 08xxx atau 628xxx</p>
@@ -525,7 +523,7 @@ function Contact() {
                                     value={data.message}
                                     onChange={e => setData('message', e.target.value)}
                                     rows={5}
-                                    className="w-full px-4 py-3 bg-slate-900/50 border border-slate-700 text-white placeholder-slate-500 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm transition-all resize-none"
+                                    className="w-full px-4 py-3 bg-slate-950/60 border border-blue-900/60 text-white placeholder-slate-500 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm transition-all resize-none"
                                     placeholder="Ceritakan proyek Anda, anggaran, dan timeline yang diinginkan..."
                                 />
                                 {errors.message && <p className="mt-1.5 text-xs text-red-400">{errors.message}</p>}
@@ -534,7 +532,7 @@ function Contact() {
                             <button
                                 type="submit"
                                 disabled={processing}
-                                className="w-full py-3.5 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 hover:shadow-lg hover:shadow-indigo-500/25"
+                                className="w-full py-3.5 bg-blue-600 hover:bg-blue-500 text-white font-semibold rounded-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 hover:shadow-lg hover:shadow-blue-500/25"
                             >
                                 {processing ? (
                                     <><span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> Mengirim...</>
@@ -569,7 +567,7 @@ function Footer() {
     ].filter(s => settings?.[s.key]);
 
     return (
-        <footer className="bg-slate-950 border-t border-slate-800">
+        <footer className="bg-slate-950 border-t border-blue-950">
             <div className="max-w-6xl mx-auto px-6 py-10">
                 <div className="flex flex-col md:flex-row items-start justify-between gap-8">
                     <div className="max-w-xs">
@@ -585,7 +583,7 @@ function Footer() {
                                 {socials.map(s => (
                                     <a key={s.key} href={settings[s.key]} target="_blank" rel="noopener noreferrer"
                                         title={s.label}
-                                        className="w-8 h-8 rounded-lg bg-slate-800 hover:bg-indigo-600 flex items-center justify-center text-sm transition-colors"
+                                        className="w-8 h-8 rounded-lg bg-slate-800 hover:bg-blue-600 flex items-center justify-center text-sm transition-colors"
                                     >
                                         {s.icon}
                                     </a>
@@ -614,17 +612,39 @@ function Footer() {
    MAIN PAGE
 ───────────────────────────────────────────── */
 export default function ContactPage({ portfolios, services }) {
-    const { settings } = usePage().props;
+    const { settings, seo } = usePage().props;
     const siteName    = settings?.site_name    || 'YZ Studio';
     const siteDesc    = settings?.site_description || 'Software house Indonesia spesialis pembuatan website, aplikasi web, dan solusi digital profesional untuk bisnis modern. Berpengalaman 3+ tahun, 50+ project selesai.';
     const siteTagline = settings?.site_tagline || 'Software House Indonesia — Website & Aplikasi Web Profesional';
+    const appUrl = seo?.appUrl || '';
+    const currentUrl = seo?.currentUrl || appUrl || '/';
+    const ogImage = settings?.logo ? `${appUrl}/storage/${settings.logo}` : `${appUrl}/favicon.ico`;
+    const [ChatbotComponent, setChatbotComponent] = useState(null);
+
+    useEffect(() => {
+        let active = true;
+
+        import('@/Components/Chatbot')
+            .then((mod) => {
+                if (active) {
+                    setChatbotComponent(() => mod.default);
+                }
+            })
+            .catch((err) => {
+                console.error('Failed to load Chatbot component:', err);
+            });
+
+        return () => {
+            active = false;
+        };
+    }, []);
 
     const jsonLd = JSON.stringify({
         "@context": "https://schema.org",
         "@type": "ProfessionalService",
         "name": siteName,
         "description": siteDesc,
-        "url": typeof window !== 'undefined' ? window.location.origin : '',
+        "url": currentUrl,
         "telephone": settings?.phone || '',
         "email": settings?.email || '',
         "address": { "@type": "PostalAddress", "addressCountry": "ID", "addressLocality": settings?.address || 'Indonesia' },
@@ -642,10 +662,12 @@ export default function ContactPage({ portfolios, services }) {
                 <meta property="og:title" content={`${siteName} — ${siteTagline}`} />
                 <meta property="og:description" content={siteDesc} />
                 <meta property="og:locale" content="id_ID" />
-                <meta property="og:image" content={settings?.logo ? `/storage/${settings.logo}` : ''} />
+                <meta property="og:url" content={currentUrl} />
+                <meta property="og:image" content={ogImage} />
                 <meta name="twitter:card" content="summary_large_image" />
                 <meta name="twitter:title" content={`${siteName} — ${siteTagline}`} />
                 <meta name="twitter:description" content={siteDesc} />
+                <meta name="twitter:image" content={ogImage} />
                 <link rel="icon" type="image/png" href={settings?.favicon ? `/storage/${settings.favicon}` : '/favicon.ico'} />
             </Head>
             <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd }} />
@@ -660,7 +682,7 @@ export default function ContactPage({ portfolios, services }) {
                 </main>
                 <footer role="contentinfo"><Footer /></footer>
             </div>
-            <Chatbot siteName={siteName} />
+            {ChatbotComponent ? <ChatbotComponent siteName={siteName} /> : null}
         </>
     );
 }

@@ -50,6 +50,10 @@ class HandleInertiaRequests extends Middleware
                 'success' => fn () => $request->session()->get('success'),
                 'error'   => fn () => $request->session()->get('error'),
             ],
+            'seo' => [
+                'appUrl' => rtrim(config('app.url'), '/'),
+                'currentUrl' => $request->fullUrl(),
+            ],
             'settings' => fn () => Setting::allAsArray(),
         ];
     }

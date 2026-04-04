@@ -4,7 +4,7 @@
     {{-- Halaman utama --}}
     <url>
         <loc>{{ url('/') }}</loc>
-        <lastmod>{{ now()->toDateString() }}</lastmod>
+        <lastmod>{{ optional($portfolios->max('updated_at'))->toDateString() ?? now()->toDateString() }}</lastmod>
         <changefreq>weekly</changefreq>
         <priority>1.0</priority>
     </url>
@@ -12,7 +12,7 @@
     {{-- Portfolio detail --}}
     @foreach($portfolios as $portfolio)
     <url>
-        <loc>{{ url('/portfolio/' . $portfolio->id) }}</loc>
+        <loc>{{ url('/portfolio/' . ($portfolio->slug ?: $portfolio->id)) }}</loc>
         <lastmod>{{ $portfolio->updated_at->toDateString() }}</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
