@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Portfolio;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -84,7 +85,10 @@ class PortfolioController extends Controller
 
         // Gambar utama
         if ($request->hasFile('image')) {
-            if ($portfolio->image) Storage::disk('public')->delete($portfolio->image);
+            if ($portfolio->image) {
+                Storage::disk('public')->delete($portfolio->image);
+                $this->deleteLegacyPublicFile($portfolio->image);
+            }
             $path = $this->processImage($request->file('image'));
             if (!$path) return back()->withErrors(['image' => 'Gagal memproses gambar utama.']);
             $validated['image'] = $path;
@@ -97,6 +101,7 @@ class PortfolioController extends Controller
         $toDelete = $validated['delete_gallery'] ?? [];
         foreach ($toDelete as $path) {
             Storage::disk('public')->delete($path);
+            $this->deleteLegacyPublicFile($path);
             $currentGallery = array_values(array_filter($currentGallery, fn($g) => $g !== $path));
         }
 
@@ -116,9 +121,13 @@ class PortfolioController extends Controller
 
     public function destroy(Portfolio $portfolio)
     {
-        if ($portfolio->image) Storage::disk('public')->delete($portfolio->image);
+        if ($portfolio->image) {
+            Storage::disk('public')->delete($portfolio->image);
+            $this->deleteLegacyPublicFile($portfolio->image);
+        }
         foreach ($portfolio->gallery ?? [] as $img) {
             Storage::disk('public')->delete($img);
+            $this->deleteLegacyPublicFile($img);
         }
         $portfolio->delete();
 
@@ -154,10 +163,33 @@ class PortfolioController extends Controller
             $image->cover($w, $h);
             $filename = 'portfolios/' . Str::uuid() . '.webp';
             $image->toWebp(82)->save(storage_path('app/public/' . $filename));
+            $this->mirrorToLegacyPublicPath($filename);
             return $filename;
         } catch (\Throwable $e) {
             Log::error('Portfolio image failed: ' . $e->getMessage());
             return null;
+        }
+    }
+
+    private function mirrorToLegacyPublicPath(string $path): void
+    {
+        $source = Storage::disk('public')->path($path);
+        $target = base_path('storage/'.$path);
+
+        if (! File::exists($source)) {
+            return;
+        }
+
+        File::ensureDirectoryExists(dirname($target));
+        File::copy($source, $target);
+    }
+
+    private function deleteLegacyPublicFile(string $path): void
+    {
+        $target = base_path('storage/'.$path);
+
+        if (File::exists($target)) {
+            File::delete($target);
         }
     }
 }
