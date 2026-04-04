@@ -54,7 +54,6 @@ export default function Chatbot({ siteName = 'YZ Studio' }) {
 
     // Form state
     const [name, setName]       = useState('');
-    const [phone, setPhone]     = useState('');
     const [firstMsg, setFirstMsg] = useState('');
     const [formErrors, setFormErrors] = useState({});
 
@@ -74,7 +73,6 @@ export default function Chatbot({ siteName = 'YZ Studio' }) {
     const validateForm = () => {
         const errors = {};
         if (!name.trim()) errors.name = 'Nama wajib diisi.';
-        if (!phone.trim()) errors.phone = 'Nomor HP wajib diisi.';
         if (!firstMsg.trim()) errors.firstMsg = 'Pertanyaan wajib diisi.';
         return errors;
     };
@@ -93,7 +91,6 @@ export default function Chatbot({ siteName = 'YZ Studio' }) {
         try {
             const data = await postJson('/chat/init', {
                 name: name.trim(),
-                phone: phone.trim(),
                 message: userMsg,
             });
             setSessionId(data.session_id);
@@ -139,7 +136,7 @@ export default function Chatbot({ siteName = 'YZ Studio' }) {
         setStep('form');
         setMessages([]);
         setSessionId(null);
-        setName(''); setPhone(''); setFirstMsg('');
+        setName(''); setFirstMsg('');
         setFormErrors({});
         setInput('');
     };
@@ -190,16 +187,6 @@ export default function Chatbot({ siteName = 'YZ Studio' }) {
                                 className="w-full px-3.5 py-2.5 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
                             />
                             {formErrors.name && <p className="mt-1 text-xs text-red-500">{formErrors.name}</p>}
-                        </div>
-                        <div>
-                            <input
-                                type="text"
-                                placeholder="Nomor HP / WhatsApp"
-                                value={phone}
-                                onChange={e => setPhone(e.target.value)}
-                                className="w-full px-3.5 py-2.5 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                            />
-                            {formErrors.phone && <p className="mt-1 text-xs text-red-500">{formErrors.phone}</p>}
                         </div>
                         <div>
                             <textarea

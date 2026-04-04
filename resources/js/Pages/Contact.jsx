@@ -619,37 +619,36 @@ export default function ContactPage({ portfolios, services }) {
     const siteDesc    = settings?.site_description || 'Software house Indonesia spesialis pembuatan website, aplikasi web, dan solusi digital profesional untuk bisnis modern. Berpengalaman 3+ tahun, 50+ project selesai.';
     const siteTagline = settings?.site_tagline || 'Software House Indonesia — Website & Aplikasi Web Profesional';
 
+    const jsonLd = JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "ProfessionalService",
+        "name": siteName,
+        "description": siteDesc,
+        "url": typeof window !== 'undefined' ? window.location.origin : '',
+        "telephone": settings?.phone || '',
+        "email": settings?.email || '',
+        "address": { "@type": "PostalAddress", "addressCountry": "ID", "addressLocality": settings?.address || 'Indonesia' },
+        "sameAs": [settings?.instagram, settings?.linkedin, settings?.github].filter(Boolean),
+        "serviceType": "Software Development",
+        "areaServed": "Indonesia",
+    });
+
     return (
         <>
-            <Head>
-                <title>{siteName} — {siteTagline}</title>
+            <Head title={`${siteName} — ${siteTagline}`}>
                 <meta name="description" content={siteDesc} />
                 <meta name="keywords" content="software house indonesia, jasa pembuatan website, jasa aplikasi web, web developer indonesia, jasa website profesional, aplikasi bisnis, website company profile" />
-                {/* Open Graph */}
                 <meta property="og:type" content="website" />
                 <meta property="og:title" content={`${siteName} — ${siteTagline}`} />
                 <meta property="og:description" content={siteDesc} />
                 <meta property="og:locale" content="id_ID" />
-                {settings?.logo && <meta property="og:image" content={`/storage/${settings.logo}`} />}
-                {/* Twitter Card */}
+                <meta property="og:image" content={settings?.logo ? `/storage/${settings.logo}` : ''} />
                 <meta name="twitter:card" content="summary_large_image" />
                 <meta name="twitter:title" content={`${siteName} — ${siteTagline}`} />
                 <meta name="twitter:description" content={siteDesc} />
-                {/* Schema.org JSON-LD */}
-                <script type="application/ld+json">{JSON.stringify({
-                    "@context": "https://schema.org",
-                    "@type": "ProfessionalService",
-                    "name": siteName,
-                    "description": siteDesc,
-                    "url": window.location.origin,
-                    "telephone": settings?.phone || '',
-                    "email": settings?.email || '',
-                    "address": { "@type": "PostalAddress", "addressCountry": "ID", "addressLocality": settings?.address || 'Indonesia' },
-                    "sameAs": [settings?.instagram, settings?.linkedin, settings?.github].filter(Boolean),
-                    "serviceType": "Software Development",
-                    "areaServed": "Indonesia",
-                })}</script>
+                <link rel="icon" type="image/png" href={settings?.favicon ? `/storage/${settings.favicon}` : '/favicon.ico'} />
             </Head>
+            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd }} />
             <div className="min-h-screen">
                 <header role="banner"><Navbar /></header>
                 <main id="main-content">
@@ -661,7 +660,7 @@ export default function ContactPage({ portfolios, services }) {
                 </main>
                 <footer role="contentinfo"><Footer /></footer>
             </div>
-            <Chatbot siteName={usePage().props.settings?.site_name || 'YZ Studio'} />
+            <Chatbot siteName={siteName} />
         </>
     );
 }

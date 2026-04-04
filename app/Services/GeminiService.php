@@ -19,7 +19,7 @@ class GeminiService
         $this->models = config('gemini.models', ['gemini-2.0-flash']);
     }
 
-    public function buildSystemPrompt(string $userName = '', string $userPhone = ''): string
+    public function buildSystemPrompt(string $userName = ''): string
     {
         $settings = Setting::allAsArray();
         $siteName = $settings['site_name'] ?? config('app.name');
@@ -59,8 +59,7 @@ Alamat    : {$address}
 {$portfolioList}
 
 == PENGGUNA SAAT INI ==
-Nama    : {$userName}
-No. WA  : {$userPhone}
+Nama : {$userName}
 
 == INSTRUKSI ==
 - Sapa pengguna dengan namanya ({$userName}) saat pertama kali menjawab.
@@ -80,12 +79,7 @@ No. WA  : {$userPhone}
 PROMPT;
     }
 
-    /**
-     * @param array  $history  [['role' => 'user'|'model', 'content' => '...']]
-     * @param string $userName  Nama pengguna untuk sapaan personal
-     * @param string $userPhone Nomor WA pengguna
-     */
-    public function chat(array $history, string $userName = '', string $userPhone = ''): array
+    public function chat(array $history, string $userName = ''): array
     {
         if (empty($this->apiKey)) {
             return ['success' => false, 'text' => 'API key Gemini belum dikonfigurasi.'];
@@ -98,7 +92,7 @@ PROMPT;
 
         $payload = [
             'system_instruction' => [
-                'parts' => [['text' => $this->buildSystemPrompt($userName, $userPhone)]],
+                'parts' => [['text' => $this->buildSystemPrompt($userName)]],
             ],
             'contents'           => $contents,
             'generationConfig'   => [

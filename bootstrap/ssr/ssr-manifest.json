@@ -1,0 +1,55 @@
+{
+  "node_modules/laravel-vite-plugin/inertia-helpers/index.js": [],
+  "resources/js/Components/Chatbot.jsx": [
+    "/build/assets/Contact-D2ltXEgQ.js"
+  ],
+  "resources/js/Layouts/AdminLayout.jsx": [
+    "/build/assets/AdminLayout-qqnefiFY.js"
+  ],
+  "resources/js/Pages/Admin/Chat/Index.jsx": [
+    "/build/assets/Index-c3Pt8OMy.js"
+  ],
+  "resources/js/Pages/Admin/Chat/Show.jsx": [
+    "/build/assets/Show-nnLDaMp8.js"
+  ],
+  "resources/js/Pages/Admin/Dashboard.jsx": [
+    "/build/assets/Dashboard-CmLLkhbt.js"
+  ],
+  "resources/js/Pages/Admin/Messages/Index.jsx": [
+    "/build/assets/Index-jIw5UkVV.js"
+  ],
+  "resources/js/Pages/Admin/Portfolio/Create.jsx": [
+    "/build/assets/Create-BFImvSTS.js"
+  ],
+  "resources/js/Pages/Admin/Portfolio/Edit.jsx": [
+    "/build/assets/Edit-BZngGnH6.js"
+  ],
+  "resources/js/Pages/Admin/Portfolio/Index.jsx": [
+    "/build/assets/Index-C6hBWhdT.js"
+  ],
+  "resources/js/Pages/Admin/Profile/Index.jsx": [
+    "/build/assets/Index-Cmgrp_-d.js"
+  ],
+  "resources/js/Pages/Admin/Service/Create.jsx": [
+    "/build/assets/Create-BSckOHPw.js"
+  ],
+  "resources/js/Pages/Admin/Service/Edit.jsx": [
+    "/build/assets/Edit-Do1IVI6E.js"
+  ],
+  "resources/js/Pages/Admin/Service/Index.jsx": [
+    "/build/assets/Index-0O8Hf2kh.js"
+  ],
+  "resources/js/Pages/Admin/Settings/Index.jsx": [
+    "/build/assets/Index-I4_uZ5GU.js"
+  ],
+  "resources/js/Pages/Auth/Login.jsx": [
+    "/build/assets/Login-siQSvFjt.js"
+  ],
+  "resources/js/Pages/Contact.jsx": [
+    "/build/assets/Contact-D2ltXEgQ.js"
+  ],
+  "resources/js/Pages/Portfolio/Show.jsx": [
+    "/build/assets/Show-SeeCbt4U.js"
+  ],
+  "resources/js/ssr.jsx": []
+}

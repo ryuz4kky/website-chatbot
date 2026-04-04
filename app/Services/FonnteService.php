@@ -7,23 +7,16 @@ use Illuminate\Support\Facades\Log;
 
 class FonnteService
 {
-    private string $apiKey;
-    private string $endpoint = 'https://api.fonnte.com/send';
+    private string $token;
+    private string $endpoint = 'https://whatsappbot.yusof.xyz/api/send-message';
 
     public function __construct()
     {
-        $this->apiKey = config('fonnte.api_key', '');
+        $this->token = config('fonnte.api_key', '');
     }
 
-    // ── Format & Validasi ────────────────────────────────────────────
-
-    /**
-     * Ubah nomor ke format internasional Indonesia.
-     * 08xxx → 628xxx, +628xxx → 628xxx
-     */
     public function formatNumber(string $number): string
     {
-        // Hapus semua karakter non-digit
         $number = preg_replace('/\D/', '', $number);
 
         if (str_starts_with($number, '0')) {
@@ -37,72 +30,53 @@ class FonnteService
         return '62' . $number;
     }
 
-    /**
-     * Validasi nomor WhatsApp Indonesia.
-     * Panjang 10–15 digit setelah format.
-     */
     public function isValidNumber(string $number): bool
     {
-        $formatted = $this->formatNumber($number);
-        // 628 diikuti 8-12 digit (total 11-15 karakter)
-        return (bool) preg_match('/^628[1-9][0-9]{7,11}$/', $formatted);
+        return (bool) preg_match('/^628[1-9][0-9]{7,11}$/', $this->formatNumber($number));
     }
 
-    // ── Core Send ────────────────────────────────────────────────────
-
-    /**
-     * Kirim pesan WhatsApp ke satu nomor.
-     *
-     * @return array{success: bool, message: string}
-     */
     public function send(string $target, string $message): array
     {
-        if (empty($this->apiKey)) {
-            Log::warning('[Fonnte] API key belum dikonfigurasi di .env (FONNTE_API_KEY).');
-            return ['success' => false, 'message' => 'API key tidak dikonfigurasi.'];
+        if (empty($this->token)) {
+            Log::warning('[WA] Token belum dikonfigurasi di .env (FONNTE_API_KEY).');
+            return ['success' => false, 'message' => 'Token tidak dikonfigurasi.'];
         }
 
         $target = $this->formatNumber($target);
 
         try {
-            $response = Http::timeout(15)
-                ->withHeaders(['Authorization' => $this->apiKey])
-                ->post($this->endpoint, [
-                    'target'  => $target,
-                    'message' => $message,
-                ]);
+            $response = Http::timeout(15)->get($this->endpoint, [
+                'token'   => $this->token,
+                'target'  => $target,
+                'message' => $message,
+            ]);
 
             $body = $response->json() ?? [];
 
-            if ($response->successful() && ($body['status'] ?? false) === true) {
-                Log::info("[Fonnte] Pesan terkirim ke {$target}");
+            if ($response->successful() && ($body['success'] ?? false) === true) {
+                Log::info("[WA] Pesan terkirim ke {$target}");
                 return ['success' => true, 'message' => 'Pesan berhasil dikirim.'];
             }
 
-            $reason = $body['reason'] ?? $body['message'] ?? 'Unknown error';
-            Log::warning("[Fonnte] Gagal kirim ke {$target}: {$reason}", ['body' => $body]);
+            $reason = $body['message'] ?? $body['error'] ?? 'Unknown error';
+            Log::warning("[WA] Gagal kirim ke {$target}: {$reason}", ['body' => $body]);
             return ['success' => false, 'message' => $reason];
 
         } catch (\Illuminate\Http\Client\ConnectionException $e) {
-            Log::error("[Fonnte] Timeout/koneksi gagal ke {$target}: " . $e->getMessage());
-            return ['success' => false, 'message' => 'Timeout koneksi ke Fonnte API.'];
+            Log::error("[WA] Timeout/koneksi gagal ke {$target}: " . $e->getMessage());
+            return ['success' => false, 'message' => 'Timeout koneksi ke WA API.'];
         } catch (\Throwable $e) {
-            Log::error("[Fonnte] Exception ke {$target}: " . $e->getMessage());
+            Log::error("[WA] Exception ke {$target}: " . $e->getMessage());
             return ['success' => false, 'message' => 'Terjadi kesalahan sistem.'];
         }
     }
 
-    // ── Notifikasi ───────────────────────────────────────────────────
-
-    /**
-     * Kirim notifikasi pesan baru ke Admin.
-     */
     public function notifyAdmin(string $name, string $whatsapp, string $message): array
     {
         $adminNumber = config('fonnte.admin_number', '');
 
         if (empty($adminNumber)) {
-            Log::warning('[Fonnte] ADMIN_WHATSAPP belum diset di .env.');
+            Log::warning('[WA] ADMIN_WHATSAPP belum diset di .env.');
             return ['success' => false, 'message' => 'Nomor admin belum dikonfigurasi.'];
         }
 
@@ -123,45 +97,39 @@ class FonnteService
         return $this->send($adminNumber, $text);
     }
 
-    /**
-     * Kirim konfirmasi penerimaan pesan ke User.
-     */
     public function notifyUser(string $name, string $whatsapp, string $message): array
     {
-        $siteName = config('app.name', 'YZ Studio');
+        $siteName  = config('app.name', 'YZ Studio');
+        $firstName = explode(' ', trim($name))[0];
+
+        $greetings = ["Halo", "Hai", "Hei"];
+        $acks      = [
+            "Pesannya sudah kami terima ✅",
+            "Sudah masuk ya, terima kasih ✅",
+            "Oke, sudah kami catat ✅",
+        ];
+        $responses = [
+            "Tim kami akan segera menghubungi kamu.",
+            "Kami akan segera merespons dalam waktu dekat.",
+            "Tunggu ya, kami akan segera balas.",
+        ];
+        $closings = [
+            "Salam,\n*Tim {$siteName}*",
+            "Terima kasih,\n*{$siteName}*",
+            "Salam hangat,\n*{$siteName}*",
+        ];
 
         $text = implode("\n", [
-            "Halo *{$name}* 👋",
+            $greetings[array_rand($greetings)] . " *{$firstName}* 👋",
             "",
             "Terima kasih sudah menghubungi *{$siteName}*.",
+            $acks[array_rand($acks)],
             "",
-            "Pesan Anda:",
-            "_{$message}_",
+            $responses[array_rand($responses)],
             "",
-            "Sudah kami terima ✅",
-            "Mohon tunggu, admin kami akan segera membalas.",
-            "",
-            "— Tim {$siteName}",
+            $closings[array_rand($closings)],
         ]);
 
         return $this->send($whatsapp, $text);
-    }
-
-    // ── Bulk ─────────────────────────────────────────────────────────
-
-    /**
-     * Kirim ke admin & user sekaligus.
-     *
-     * @return array{admin: array, user: array}
-     */
-    public function notifyBoth(string $name, string $whatsapp, string $message): array
-    {
-        $adminResult = $this->notifyAdmin($name, $whatsapp, $message);
-        $userResult  = $this->notifyUser($name, $whatsapp, $message);
-
-        return [
-            'admin' => $adminResult,
-            'user'  => $userResult,
-        ];
     }
 }

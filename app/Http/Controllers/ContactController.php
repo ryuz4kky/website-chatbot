@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\SendUserWhatsApp;
 use App\Models\Message;
 use App\Models\Portfolio;
 use App\Models\Service;
@@ -48,7 +49,7 @@ class ContactController extends Controller
             'message'  => trim($validated['message']),
         ]);
 
-        // ── 3. Kirim notifikasi WA ke Admin saja ─────────────────────
+        // ── 3. Notifikasi WA ke Admin ────────────────────────────────
         $result = $this->fonnte->notifyAdmin($msg->name, $msg->whatsapp, $msg->message);
 
         if ($result['success']) {
@@ -59,6 +60,11 @@ class ContactController extends Controller
         }
 
         $msg->save();
+
+        // ── 4. Kirim konfirmasi ke User (delay acak, hanya jam kerja) ─
+        $delay = rand(45, 120); // 45–120 detik setelah admin
+        SendUserWhatsApp::dispatch($msg->name, $msg->whatsapp, $msg->message)
+            ->delay(now()->addSeconds($delay));
 
         return back()->with('success', 'Pesan berhasil dikirim! Kami akan segera menghubungi Anda.');
     }

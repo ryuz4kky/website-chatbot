@@ -15,39 +15,18 @@ class ChatController extends Controller
     {
         $request->validate([
             'name'    => ['required', 'string', 'max:255'],
-            'phone'   => ['required', 'string', 'max:20'],
             'message' => ['required', 'string', 'min:3', 'max:1000'],
         ]);
 
-        // Simpan sesi user ke database
-        $session = ChatSession::create([
-            'name'  => trim($request->name),
-            'phone' => trim($request->phone),
-        ]);
+        $message = trim($request->message);
+        $session = ChatSession::create(['name' => trim($request->name)]);
+        $session->messages()->create(['role' => 'user', 'content' => $message]);
 
-        // Simpan pesan pertama user
-        $session->messages()->create([
-            'role'    => 'user',
-            'content' => trim($request->message),
-        ]);
+        $result = $this->gemini->chat([['role' => 'user', 'content' => $message]], $session->name);
 
-        // Kirim ke Gemini dengan info pengguna
-        $result = $this->gemini->chat(
-            [['role' => 'user', 'content' => trim($request->message)]],
-            $session->name,
-            $session->phone
-        );
+        $session->messages()->create(['role' => 'model', 'content' => $result['text']]);
 
-        // Simpan balasan AI
-        $session->messages()->create([
-            'role'    => 'model',
-            'content' => $result['text'],
-        ]);
-
-        return response()->json([
-            'session_id' => $session->id,
-            'reply'      => $result['text'],
-        ]);
+        return response()->json(['session_id' => $session->id, 'reply' => $result['text']]);
     }
 
     public function send(Request $request): JsonResponse
@@ -58,34 +37,18 @@ class ChatController extends Controller
         ]);
 
         $session = ChatSession::findOrFail($request->session_id);
+        $session->messages()->create(['role' => 'user', 'content' => trim($request->message)]);
 
-        // Simpan pesan user
-        $session->messages()->create([
-            'role'    => 'user',
-            'content' => trim($request->message),
-        ]);
-
-        // Ambil riwayat untuk konteks (maks 20 pesan terakhir)
         $history = $session->messages()
-            ->latest()
-            ->take(20)
-            ->get()
+            ->latest()->take(20)->get()
             ->reverse()
             ->map(fn($m) => ['role' => $m->role, 'content' => $m->content])
-            ->values()
-            ->toArray();
+            ->values()->toArray();
 
-        // Kirim ke Gemini dengan info pengguna
-        $result = $this->gemini->chat($history, $session->name, $session->phone);
+        $result = $this->gemini->chat($history, $session->name);
 
-        // Simpan balasan AI
-        $session->messages()->create([
-            'role'    => 'model',
-            'content' => $result['text'],
-        ]);
+        $session->messages()->create(['role' => 'model', 'content' => $result['text']]);
 
-        return response()->json([
-            'reply' => $result['text'],
-        ]);
+        return response()->json(['reply' => $result['text']]);
     }
 }
