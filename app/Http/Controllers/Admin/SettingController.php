@@ -40,7 +40,10 @@ class SettingController extends Controller
         // Handle logo upload
         if ($request->hasFile('logo')) {
             $old = Setting::get('logo');
-            if ($old) Storage::disk('public')->delete($old);
+            if ($old) {
+                Storage::disk('public')->delete($old);
+                $this->deleteLegacyPublicFile($old);
+            }
 
             $path = $request->file('logo')->store('settings', 'public');
             $this->mirrorToLegacyPublicPath($path);
@@ -50,7 +53,10 @@ class SettingController extends Controller
         // Handle favicon upload
         if ($request->hasFile('favicon')) {
             $old = Setting::get('favicon');
-            if ($old) Storage::disk('public')->delete($old);
+            if ($old) {
+                Storage::disk('public')->delete($old);
+                $this->deleteLegacyPublicFile($old);
+            }
 
             $path = $request->file('favicon')->store('settings', 'public');
             $this->mirrorToLegacyPublicPath($path);
@@ -71,7 +77,7 @@ class SettingController extends Controller
     private function mirrorToLegacyPublicPath(string $path): void
     {
         $source = Storage::disk('public')->path($path);
-        $target = base_path($path);
+        $target = base_path('storage/'.$path);
 
         if (! File::exists($source)) {
             return;
@@ -79,5 +85,14 @@ class SettingController extends Controller
 
         File::ensureDirectoryExists(dirname($target));
         File::copy($source, $target);
+    }
+
+    private function deleteLegacyPublicFile(string $path): void
+    {
+        $target = base_path('storage/'.$path);
+
+        if (File::exists($target)) {
+            File::delete($target);
+        }
     }
 }
