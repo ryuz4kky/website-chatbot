@@ -145,14 +145,14 @@ PROMPT;
                     continue;
                 }
 
-                $text = $body['message']['content'][0]['text'] ?? null;
+                $text = $this->extractText($body);
 
                 if ($text) {
                     Log::info("[Cohere] Berhasil menggunakan model {$model}");
                     return ['success' => true, 'text' => $text];
                 }
 
-                $reason = $errorMessage ?? 'Respons tidak dikenali.';
+                $reason = $errorMessage ?? ('HTTP ' . $response->status() . ', respons tidak dikenali.');
                 Log::warning("[Cohere] Gagal pada model {$model}: {$reason}");
             } catch (\Throwable $e) {
                 Log::error("[Cohere] Exception pada model {$model}: " . $e->getMessage());
@@ -177,5 +177,20 @@ PROMPT;
         }
 
         return array_values(array_unique($filtered));
+    }
+
+    private function extractText(array $body): ?string
+    {
+        $text = $body['message']['content'][0]['text']
+            ?? $body['text']
+            ?? null;
+
+        if (!is_string($text)) {
+            return null;
+        }
+
+        $text = trim($text);
+
+        return $text === '' ? null : $text;
     }
 }
