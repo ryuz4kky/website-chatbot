@@ -3,13 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\ChatSession;
-use App\Services\GeminiService;
+use App\Services\CohereService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class ChatController extends Controller
 {
-    public function __construct(private GeminiService $gemini) {}
+    public function __construct(private CohereService $cohere) {}
 
     public function init(Request $request): JsonResponse
     {
@@ -22,7 +22,7 @@ class ChatController extends Controller
         $session = ChatSession::create(['name' => trim($request->name)]);
         $session->messages()->create(['role' => 'user', 'content' => $message]);
 
-        $result = $this->gemini->chat([['role' => 'user', 'content' => $message]], $session->name);
+        $result = $this->cohere->chat([['role' => 'user', 'content' => $message]], $session->name);
 
         $session->messages()->create(['role' => 'model', 'content' => $result['text']]);
 
@@ -45,7 +45,7 @@ class ChatController extends Controller
             ->map(fn($m) => ['role' => $m->role, 'content' => $m->content])
             ->values()->toArray();
 
-        $result = $this->gemini->chat($history, $session->name);
+        $result = $this->cohere->chat($history, $session->name);
 
         $session->messages()->create(['role' => 'model', 'content' => $result['text']]);
 
